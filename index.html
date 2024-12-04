@@ -41,6 +41,14 @@
 		content: url('images/qplus-black.png'); /* Replace the image */ 
 	} 
 	}
+	#starDustCanvas {
+            position: fixed; /* Change to fixed to cover the entire viewport */
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1; /* Ensure it is behind other content */
+        }
 	</style>
 	<nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
 		<div class="container">
@@ -48,7 +56,7 @@
 			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
 				<span class="oi oi-menu"></span> Menu
 			</button>
-
+		
 			<div class="collapse navbar-collapse" id="ftco-nav">
 				<ul class="navbar-nav ml-auto">
 					<li class="nav-item active"><a href="index.html" class="nav-link">Home</a></li>
@@ -62,7 +70,7 @@
 		</div>
 	</nav>
 	<!-- END nav -->
-	
+	<canvas id="starDustCanvas"></canvas>
 	<div class="hero-wrap js-fullheight" style="background-image: url('images/home1.png');">
 		<div class="overlay"></div>
 		<div class="container">
@@ -815,6 +823,101 @@
 			<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBVWaKrjvy3MaE7SQ74_uJiULgl1JY0H2s&sensor=false"></script>
 			<script src="js/google-map.js"></script>
 			<script src="js/main.js"></script>
+			<script>
+				const canvas = document.getElementById('starDustCanvas');
+				const ctx = canvas.getContext('2d');
+		
+				canvas.width = window.innerWidth;
+				canvas.height = window.innerHeight;
+		
+				let stars = [];
+		
+				function createStar(x, y) {
+					stars.push({
+						x: x,
+						y: y,
+						radius: Math.random() * 2 + 1, // Random radius between 1 and 3
+						alpha: Math.random() * 0.5 + 0.5, // Random alpha between 0.5 and 1
+						speed: Math.random() * 0.2 + 0.1 // Random speed for twinkling effect
+					});
+				}
+		
+				function drawStars() {
+					ctx.clearRect(0, 0, canvas.width, canvas.height);
+					stars.forEach(star => {
+						ctx.beginPath();
+						ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+						ctx.fillStyle = `rgba(255, 255, 255, ${star.alpha})`;
+						ctx.fill();
+						star.y += star.speed; // Move the star downwards
+						if (star.y > canvas.height) {
+							star.y = 0; // Reset star position to the top
+						}
+					});
+				}
+		
+				function animate() {
+					drawStars();
+					requestAnimationFrame(animate);
+				}
+		
+				canvas.addEventListener('mousemove', (event) => {
+					createStar(event.clientX, event.clientY); // Create star at mouse position
+				});
+		
+				// Initialize stars
+				for (let i = 0; i < 100; i++) {
+					createStar(Math.random() * canvas.width, Math.random() * canvas.height);
+				}
+		
+				animate(); // Start the animation
+			</script>
+		    <!-- <script>
+				const canvas = document.getElementById('starDustCanvas');
+				const ctx = canvas.getContext('2d');
+		
+				canvas.width = window.innerWidth;
+				canvas.height = window.innerHeight;
+		
+				let mouseX = canvas.width / 2;
+				let mouseY = canvas.height / 2;
+		
+				// Update mouse position
+				canvas.addEventListener('mousemove', (event) => {
+					mouseX = event.clientX;
+					mouseY = event.clientY;
+				});
+		
+				function drawLines() {
+					ctx.clearRect(0, 0, canvas.width, canvas.height);
+					const lineCount = 100; // Number of lines
+					const maxLength = 200; // Maximum length of lines
+		
+					for (let i = 0; i < lineCount; i++) {
+						const angle = (i / lineCount) * Math.PI * 2; // Angle for each line
+						const length = maxLength * Math.sin(Date.now() * 0.002 + i); // Length varies over time
+		
+						const x1 = mouseX;
+						const y1 = mouseY;
+						const x2 = mouseX + Math.cos(angle) * length;
+						const y2 = mouseY + Math.sin(angle) * length;
+		
+						ctx.beginPath();
+						ctx.moveTo(x1, y1);
+						ctx.lineTo(x2, y2);
+						ctx.strokeStyle = `rgba(255, 255, 255, ${Math.abs(Math.sin(Date.now() * 0.002 + i) * 0.5 + 0.5)})`; // Varying opacity // Varying opacity
+						ctx.lineWidth = 2; // Line width
+						ctx.stroke();
+					}
+				}
+		
+				function animate() {
+					drawLines();
+					requestAnimationFrame(animate);
+				}
+		
+				animate(); // Start the animation
+			</script> -->
 			
 		</body>
 		</html>

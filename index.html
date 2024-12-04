@@ -42,7 +42,7 @@
 	} 
 	}
 	#starDustCanvas {
-            position: fixed; /* Change to fixed to cover the entire viewport */
+            position: absolute; /* Change to fixed to cover the entire viewport */
             top: 0;
             left: 0;
             width: 100%;
@@ -72,6 +72,7 @@
 	<!-- END nav -->
 	<canvas id="starDustCanvas"></canvas>
 	<div class="hero-wrap js-fullheight" style="background-image: url('images/home1.png');">
+		
 		<div class="overlay"></div>
 		<div class="container">
 			<div class="row no-gutters slider-text js-fullheight align-items-center" data-scrollax-parent="true">
@@ -831,6 +832,8 @@
 				canvas.height = window.innerHeight;
 		
 				let stars = [];
+				let lastMouseMoveTime = 0; // Track the last time the mouse moved
+				const starCreationInterval = 50; // Time in milliseconds to wait before creating a new star
 		
 				function createStar(x, y) {
 					stars.push({
@@ -862,62 +865,20 @@
 				}
 		
 				canvas.addEventListener('mousemove', (event) => {
-					createStar(event.clientX, event.clientY); // Create star at mouse position
+					const currentTime = Date.now();
+					if (currentTime - lastMouseMoveTime > starCreationInterval) {
+						// Create a limited number of stars (e.g., 1 star per interval)
+						createStar(event.clientX, event.clientY);
+						lastMouseMoveTime = currentTime; // Update the last mouse move time
+					}
 				});
 		
 				// Initialize stars
-				for (let i = 0; i < 100; i++) {
+				for (let i = 0; i < 50; i++) { // Start with fewer stars
 					createStar(Math.random() * canvas.width, Math.random() * canvas.height);
 				}
 		
 				animate(); // Start the animation
 			</script>
-		    <!-- <script>
-				const canvas = document.getElementById('starDustCanvas');
-				const ctx = canvas.getContext('2d');
-		
-				canvas.width = window.innerWidth;
-				canvas.height = window.innerHeight;
-		
-				let mouseX = canvas.width / 2;
-				let mouseY = canvas.height / 2;
-		
-				// Update mouse position
-				canvas.addEventListener('mousemove', (event) => {
-					mouseX = event.clientX;
-					mouseY = event.clientY;
-				});
-		
-				function drawLines() {
-					ctx.clearRect(0, 0, canvas.width, canvas.height);
-					const lineCount = 100; // Number of lines
-					const maxLength = 200; // Maximum length of lines
-		
-					for (let i = 0; i < lineCount; i++) {
-						const angle = (i / lineCount) * Math.PI * 2; // Angle for each line
-						const length = maxLength * Math.sin(Date.now() * 0.002 + i); // Length varies over time
-		
-						const x1 = mouseX;
-						const y1 = mouseY;
-						const x2 = mouseX + Math.cos(angle) * length;
-						const y2 = mouseY + Math.sin(angle) * length;
-		
-						ctx.beginPath();
-						ctx.moveTo(x1, y1);
-						ctx.lineTo(x2, y2);
-						ctx.strokeStyle = `rgba(255, 255, 255, ${Math.abs(Math.sin(Date.now() * 0.002 + i) * 0.5 + 0.5)})`; // Varying opacity // Varying opacity
-						ctx.lineWidth = 2; // Line width
-						ctx.stroke();
-					}
-				}
-		
-				function animate() {
-					drawLines();
-					requestAnimationFrame(animate);
-				}
-		
-				animate(); // Start the animation
-			</script> -->
-			
 		</body>
 		</html>
